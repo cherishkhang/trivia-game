@@ -1,0 +1,66 @@
+body {
+	margin: 15px;
+	background: url('../images/background.jpg');
+	font-family: Exo;
+}
+
+header, main {
+	background: #f5e79f;
+	border-radius: 10px;
+	margin: 20px;
+	padding: 20px;
+}
+
+header {
+	text-align: center;
+}
+
+main {
+	min-height: 200px;
+}
+
+h1 {
+	font-size: 24px;
+}
+
+h2 {
+	font-size: 20px;
+	text-align: center;
+	padding-bottom: 10px;
+}
+
+h3 {
+	font-size: 18px;
+	padding-bottom: 5px;
+}
+
+img {
+	max-width: 100%;
+}
+
+.timer {
+	text-align: center;
+	margin-bottom: 20px;
+	font-style: italic;
+}
+
+.button {
+	text-align: center;
+}
+
+.question {
+	text-align: left;
+}
+
+.answer {
+	margin-left: 20px;
+	padding: 10px 10px 10px 16px;
+}
+
+.answer:hover {
+	background: url('../images/pokeball.png') no-repeat;
+}
+
+.results-img {
+	text-align: center;
+}
