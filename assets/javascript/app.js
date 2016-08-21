@@ -11,7 +11,7 @@ var trivia = {
 	//Number of the current question being asked starting with 0
 	questionNumber: 0,
 
-	//List of questions
+	//List of questions, answer choices, correct answer, image for results page
 	questions:
 		[
 			{
@@ -80,8 +80,8 @@ var trivia = {
 			}
 		],
 
-	//Dsplay time remaining, and decrease time by 1 second. Question parameter: true for questions, false for results
-	beginCountdown: function(time,question) {
+	//Dsplay time remaining, and decrease time by 1 second
+	beginCountdown: function(time) {
 		$('.timer').html('Time Remaining: ' + time);
 		counter = setInterval(function () {
 			time--;
@@ -89,16 +89,9 @@ var trivia = {
 
 			//When countdown gets to 0
 			if(time === 0) {
-				//If countdown is for a question, increased number of missed questions and move to next question
-				if (question) {
-					trivia.missed++;
-					trivia.nextQuestion();
-				}
-
-				//If not a question (a.k.a. results page), move to next question
-				else {
-					trivia.nextQuestion();
-				}
+				//Increase number of missed questions and show results
+				trivia.missed++;
+				trivia.results('missed');
 			}
 		},1000);
 	},
@@ -112,13 +105,13 @@ var trivia = {
 	game: function() {
 		//If there are unanswered questions, run code
 		if (trivia.questionNumber < trivia.questions.length) {
-			//Begin countdown
-			trivia.beginCountdown(30,true);
+			//Begin countdown for 30 seconds
+			trivia.beginCountdown(30);
 
 			//Create new variable to make it easier to reference questionNumber
 			number = trivia.questionNumber;
 
-			//Add 1 to questionNumber for displaying the number of the question in normal integers
+			//Add 1 to questionNumber for displaying the number of the question in normal integers (i.e. question #1, rather than question #0)
 			normalNumber = number + 1;
 
 			//Display question
@@ -135,34 +128,15 @@ var trivia = {
 				//Log the answer into a variable
 				answer = $(this).data('answer');
 
-				//If answer is correct
+				//If answer is correct, increase correct answers and show results page
 				if (answer == trivia.questions[number].correct) {
 					trivia.correct++;
-
-					//Stop previous countdown
-					trivia.stopCountdown();
-
-					//Begin 3 second countdown
-					trivia.beginCountdown(3,false);
-
-					$('.show-question').empty();
-					$('.show-question').append('<h2>Correct!</h2>');
-					$('.show-question').append('<div class="results-img"><img src="assets/images/' + trivia.questions[number].img + '" alt="' + trivia.questions[number].correct + '"></div>');
+					trivia.results('correct');
 				}
-				//Else if answer is incorrect
+				//Else if answer is incorrect, increase incorrect answers and show results page
 				else {
 					trivia.incorrect++;
-
-					//Stop previous countdown
-					trivia.stopCountdown();
-
-					//Begin 3 second countdown
-					trivia.beginCountdown(3,false);
-
-					$('.show-question').empty();
-					$('.show-question').append('<h2>Wrong!</h2>');
-					$('.show-question').append('<div style="text-align: center;">Correct answer is ' + trivia.questions[number].correct + '.</div><br>');
-					$('.show-question').append('<div class="results-img"><img src="assets/images/' + trivia.questions[number].img + '" alt="' + trivia.questions[number].correct + '"></div>');
+					trivia.results('incorrect');
 				}
 			});
 		}
@@ -173,7 +147,30 @@ var trivia = {
 		}
 	},
 
-	//Reset '.show-question' area, display next question by calling trivia.game(), and reset timer
+	//Results page. Result parameter: 'correct', 'incorrect', or 'missed'. Calls nextQuestion() after 3 seconds.
+	results: function(result) {
+		//Stop previous countdown
+		trivia.stopCountdown();
+
+		$('.show-question, .timer').empty();
+
+		if (result == 'correct') {
+			$('.show-question').append('<h2>Correct!</h2>');
+		}
+		else if (result == 'incorrect') {
+			$('.show-question').append('<h2>Incorrect!</h2>');
+		}
+		else if (result == 'missed') {
+			$('.show-question').append('<h2>You took too long!</h2>');
+		}
+
+		$('.show-question').append('<div style="text-align: center;">Correct answer is ' + trivia.questions[number].correct + '.</div><br>');
+		$('.show-question').append('<div class="results-img"><img src="assets/images/' + trivia.questions[number].img + '" alt="' + trivia.questions[number].correct + '"></div>');
+
+		setTimeout(trivia.nextQuestion,3000);
+	},
+
+	//Reset 'show-question' area, display next question by calling trivia.game(), and reset timer
 	nextQuestion: function() {
 		trivia.stopCountdown();
 		$('.show-question').empty();
@@ -203,7 +200,7 @@ var trivia = {
 		trivia.missed = 0;
 		trivia.questionNumber = 0;
 
-		//Clear '.show-question' and call game() again
+		//Clear 'show-question' and 'button' areas and calls game()
 		$('.show-question, .button').empty();
 		trivia.game();
 	}
