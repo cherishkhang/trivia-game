@@ -185,7 +185,7 @@ var trivia = {
 		$('.show-question').append('<h3>Correct: ' + trivia.correct + '</h3>');
 		$('.show-question').append('<h3>Incorrect: ' + trivia.incorrect + '</h3>');
 		$('.show-question').append('<h3>Missed: ' + trivia.missed + '</h3>');
-		$('.button').html('<div class="reset-game"><button type="button" class="btn btn-danger" id="reset-game">Play Again?</div>');
+		$('.button').html('<div class="reset-game"><button type="button" class="btn btn-danger" id="reset-game">Play Again?</button></div>');
 
 		//Onclick event for 'play again' button
 		$('#reset-game').click(function() {
